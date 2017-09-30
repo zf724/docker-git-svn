@@ -20,13 +20,13 @@ if [ "$(ls -A /repos/git/)" ]; then
 fi
 
 echo $GIT_USER:$GIT_PASS | chpasswd
+test ! -d "/repos/git/$REPO_TEST" && git init --bare /repos/git/$REPO_TEST
+echo "Creating the git repository: $SVN_REPO into /repos/git/$SVN_REPO"
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D
 
 htpasswd -bc /etc/apache2/conf.d/davsvn.htpasswd $SVN_USER $SVN_PASS
-httpd -D FOREGROUND
-
-test ! -d "/repos/git/$REPO_TEST" && git init --bare /repos/git/$REPO_TEST
-echo "Creating the git repository: $SVN_REPO into /repos/git/$SVN_REPO"
 test ! -d "/repos/svn/$REPO_TEST" && svnadmin create /repos/svn/$REPO_TEST && chgrp -R apache /repos/svn/$REPO_TEST && chmod -R 775 /repos/svn/$REPO_TEST
 echo "Creating the svn repository: $SVN_REPO into /repos/svn/$SVN_REPO"
+httpd -D FOREGROUND
+
