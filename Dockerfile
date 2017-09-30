@@ -34,6 +34,7 @@ ENV GIT_USER git
 ENV GIT_PASS 123456
 ENV SVN_USER svn
 ENV SVN_PASS 123456
+ENV REPO_TEST testrepo
 
 RUN set -xe \
     && mkdir -p /repos/keys \
