@@ -2,9 +2,9 @@
 
 # If there is some public key in keys folder
 # then it copies its contain in authorized_keys file
-if [ "$(ls -A /repos/keys/)" ]; then
+if [ "$(ls -A /repos/git-keys/)" ]; then
   cd /home/git
-  cat /repos/keys/*.pub > .ssh/authorized_keys
+  cat /repos/git-keys/*.pub > .ssh/authorized_keys
   chown -R git:git .ssh
   chmod 700 .ssh
   chmod -R 600 .ssh/*
@@ -23,10 +23,23 @@ echo $GIT_USER:$GIT_PASS | chpasswd
 test ! -d "/repos/git/$REPO_TEST" && git init --bare /repos/git/$REPO_TEST
 echo "Creating the git repository: $SVN_REPO into /repos/git/$SVN_REPO"
 # -D flag avoids executing sshd as a daemon
-/usr/sbin/sshd -D
+/usr/sbin/sshd # -D
 
-htpasswd -bc /etc/apache2/conf.d/davsvn.htpasswd $SVN_USER $SVN_PASS
-test ! -d "/repos/svn/$REPO_TEST" && svnadmin create /repos/svn/$REPO_TEST && chgrp -R apache /repos/svn/$REPO_TEST && chmod -R 775 /repos/svn/$REPO_TEST
-echo "Creating the svn repository: $SVN_REPO into /repos/svn/$SVN_REPO"
-httpd -D FOREGROUND
-
+if [ ! -d "/repos/svn/$REPO_TEST" ] && [ "$(ls -A /repos/svn-conf)" ]; then
+  svnadmin create /repos/svn/$REPO_TEST
+  sed -i -e '/anon-access /s/^#//' \
+         -e '/auth-access /s/^#//' \
+         -e '/password-db /s/^#//' \
+         -e '/authz-db /s/^#//'    \
+         -e '/anon-access /s/read/none/' \
+         -e '/password-db #s#passwd#/repos/svn-conf/passwd#' \
+         -e '/authz-db #s#authz#/repos/svn-conf/authz#' \
+         /repos/svn/$REPO_TEST/conf/svnserve.conf
+  echo "$SVN_USER = $SVN_PASS" >> /repos/svn-conf/passwd
+  { \
+    echo "[/$REPO_TEST]";  \
+    echo "$SVN_USER = rw"; \
+  }>> /repos/svn-conf/authz
+  echo "Creating the svn repository: $REPO_TEST into /repos/svn/$REPO_TEST"
+fi
+/usr/bin/svnserve -r /repos/svn -d --foreground

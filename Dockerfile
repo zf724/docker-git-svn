@@ -23,12 +23,8 @@ COPY git-shell-commands /home/git/git-shell-commands
 ########################## subversion server #################################
 # Install and configure Apache WebDAV and Subversion
 RUN apk add --no-cache \
-    apache2 \
-    apache2-utils \
-    apache2-webdav \
-    mod_dav_svn \
     subversion
-COPY davsvn.conf /etc/apache2/conf.d/
+COPY svn-conf /repos/svn-conf
 ############################# others #########################################
 ENV GIT_USER git
 ENV GIT_PASS 123456
@@ -37,7 +33,7 @@ ENV SVN_PASS 123456
 ENV REPO_TEST testrepo
 
 RUN set -xe \
-    && mkdir -p /repos/keys \
+    && mkdir -p /repos/git-keys \
     && mkdir -p /repos/git \
     && mkdir -p /repos/svn
 
@@ -46,6 +42,6 @@ WORKDIR /repos
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 22 80
+EXPOSE 22 3690
 
 ENTRYPOINT ["/entrypoint.sh"]
