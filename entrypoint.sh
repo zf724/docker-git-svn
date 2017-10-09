@@ -27,10 +27,10 @@ echo "Creating the git repository: $SVN_REPO into /repos/git/$SVN_REPO"
 
 if [ ! -d "/repos/svn/$REPO_TEST" ] && [ "$(ls -A /repos/svn-conf)" ]; then
   svnadmin create /repos/svn/$REPO_TEST
-  sed -i -e '/anon-access /s/^#//' \
-         -e '/auth-access /s/^#//' \
-         -e '/password-db /s/^#//' \
-         -e '/authz-db /s/^#//'    \
+  sed -i -e '/anon-access /s/^# //' \
+         -e '/auth-access /s/^# //' \
+         -e '/password-db /s/^# //' \
+         -e '/authz-db /s/^# //'    \
          -e '/anon-access /s/read/none/' \
          -e '/password-db #s#passwd#/repos/svn-conf/passwd#' \
          -e '/authz-db #s#authz#/repos/svn-conf/authz#' \
