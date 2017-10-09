@@ -32,8 +32,8 @@ if [ ! -d "/repos/svn/$REPO_TEST" ] && [ "$(ls -A /repos/svn-conf)" ]; then
          -e '/password-db /s/^# //' \
          -e '/authz-db /s/^# //'    \
          -e '/anon-access /s/read/none/' \
-         -e '/password-db /s#passwd#/repos/svn-conf/passwd#' \
-         -e '/authz-db /s#authz#/repos/svn-conf/authz#' \
+         -e '/password-db /s#passwd$#/repos/svn-conf/passwd$#' \
+         -e '/authz-db /s#authz$#/repos/svn-conf/authz$#' \
          /repos/svn/$REPO_TEST/conf/svnserve.conf
   echo "$SVN_USER = $SVN_PASS" >> /repos/svn-conf/passwd
   { \
