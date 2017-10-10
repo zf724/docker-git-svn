@@ -24,7 +24,6 @@ COPY git-shell-commands /home/git/git-shell-commands
 # Install and configure Apache WebDAV and Subversion
 RUN apk add --no-cache \
     subversion
-COPY svn-conf /repos/svn-conf
 ############################# others #########################################
 ENV GIT_USER git
 ENV GIT_PASS 123456
