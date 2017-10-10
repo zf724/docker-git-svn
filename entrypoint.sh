@@ -25,7 +25,7 @@ echo "Creating the git repository: $SVN_REPO into /repos/git/$SVN_REPO"
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd # -D
 
-if [ ! -d "/repos/svn/$REPO_TEST" ] && [ "$(ls -A /repos/svn-conf)" ]; then
+if [ ! -d "/repos/svn/$REPO_TEST" ]; then
   svnadmin create /repos/svn/$REPO_TEST
   sed -i -e '/anon-access /s/^# //' \
          -e '/auth-access /s/^# //' \
