@@ -35,8 +35,9 @@ if [ ! -d "/repos/svn/$REPO_TEST" ]; then
          /repos/svn/$REPO_TEST/conf/svnserve.conf
   echo "$SVN_USER = $SVN_PASS" >> /repos/svn/$REPO_TEST/conf/passwd
   { \
-    echo "[repository:/$REPO_TEST]";  \
+    echo "[/]";  \
     echo "$SVN_USER = rw"; \
+    echo "* = r"; \
   }>> /repos/svn/$REPO_TEST/conf/authz
   echo "Creating the svn repository: $REPO_TEST into /repos/svn/$REPO_TEST"
 fi
